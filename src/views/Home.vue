@@ -27,14 +27,19 @@ export default {
   created: function () {
     window.scrollTo(0, 0)
 
+    if (!this.isMobileDevice()) {
+      $('body').css('overflow', 'hidden')
+    }
+
     this.$on('arrow-click', this.onScroll)
-    $('body').css('overflow', 'hidden')
     $('body').on('mousewheel', this.onScroll)
+    // $('body').on('touchmove', this.test)
     $('body').keydown(this.onScroll)
   },
   destroyed: function () {
     $('body').css('overflow', 'visible')
     $('body').off('mousewheel')
+    // $('body').off('touchmove')
     $('body').off('keydown')
   },
 
@@ -43,6 +48,7 @@ export default {
   },
   data: function () {
     return {
+      prevYTouch: undefined,
       bannerLocation: -1,
       banners: [
         {
@@ -95,9 +101,11 @@ export default {
       }
       // console.log(this.bannerLocation)
     },
-    test: function (banner) {
-      const message = banner ? 'banner test' : 'splash test'
-      console.log(message)
+    isMobileDevice () {
+      return (typeof window.orientation !== 'undefined') || (navigator.userAgent.indexOf('IEMobile') !== -1)
+    },
+    test: function (e) {
+      console.log('touchmoved at ' + e.originalEvent.touches[0].clientY)
     }
   }
 }

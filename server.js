@@ -4,7 +4,7 @@ const express = require('express')
 const app = express()
 const path = require('path')
 
-const PORT = 8000
+const PORT = 80
 
 app.use('/static', express.static('dist/static'))
 
