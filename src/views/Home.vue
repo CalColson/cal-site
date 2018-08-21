@@ -1,56 +1,122 @@
 <template>
-  <div class="container-fluid">
-    <div v-for="banner in banners" :key="banner.id">
-      <div class="row"><div class="col spacer"></div></div>
-      <banner :message="banner.message" :img="banner.img" :reverse="banner.reverse"></banner>
+  <div class="container-fluid p-0">
+    <div id="banner--1">
+      <b-img class="h-100 w-100" src="../assets/splash-stock.jpg" alt="CalSite"/>
+      <div id="splashText">
+        <h1>CalSite</h1>
+        <p class="lead mt-3">A place to share what it means to be me,<br>
+        and the things that come out of that
+        </p>
+      </div>
+      <div @click="$emit('arrow-click')" style="position: absolute; bottom: 1rem; left: 50%"><fa-icon icon="angle-down" size="3x"/></div>
     </div>
-    <div class="row"><div class="col spacer"></div></div>
+    <div v-for="banner in banners" :key="banner.id" :id="'banner-' + banner.id">
+      <banner @arrow-click="onScroll" :message="banner.message" :img="banner.img" :reverse="banner.reverse" :down="banner.down"></banner>
+    </div>
   </div>
 </template>
 
 <script>
 import Banner from '../components/Banner'
+import $ from 'jquery'
 
 export default {
   name: 'home',
+
+  // Life-cycle hooks
+  created: function () {
+    window.scrollTo(0, 0)
+
+    this.$on('arrow-click', this.onScroll)
+    $('body').css('overflow', 'hidden')
+    $('body').on('mousewheel', this.onScroll)
+    $('body').keydown(this.onScroll)
+  },
+  destroyed: function () {
+    $('body').css('overflow', 'visible')
+    $('body').off('mousewheel')
+    $('body').off('keydown')
+  },
+
   components: {
     Banner
   },
   data: function () {
     return {
+      bannerLocation: -1,
       banners: [
         {
           id: 0,
           message: 'Writing',
-          img: require('../assets/writing-stock-edit.jpeg'),
-          reverse: false
+          img: require('../assets/writing-stock.jpeg'),
+          reverse: false,
+          down: true
         },
         {
           id: 1,
           message: 'Drawing',
-          img: require('../assets/drawing-stock-edit.jpeg'),
-          reverse: true
+          img: require('../assets/drawing-stock.jpeg'),
+          reverse: true,
+          down: true
+        },
+        {
+          id: 2,
+          message: 'Music',
+          img: require('../assets/music-stock.jpg'),
+          reverse: false,
+          down: false
         }
-        // {
-        //   id: 2,
-        //   message: 'Writing',
-        //   img: require('../assets/writing-stock-edit.jpeg'),
-        //   reverse: false
-        // },
-        // {
-        //   id: 3,
-        //   message: 'Drawing',
-        //   img: require('../assets/drawing-stock-edit.jpeg'),
-        //   reverse: true
-        // }
       ]
+    }
+  },
+  methods: {
+    onScroll: function (e) {
+      // console.log(e)
+
+      let elem
+      if (e && (e.originalEvent.wheelDelta > 0 || e.key === 'ArrowUp')) {
+        if (this.bannerLocation >= 0) {
+          this.bannerLocation--
+        }
+        elem = $(`#banner-${this.bannerLocation}`)
+        window.scroll({
+          top: elem.offset().top - 56,
+          behavior: 'smooth'
+        })
+      } else if (!e || e.originalEvent.wheelDelta < 0 || e.key === 'ArrowDown' || e.key === ' ') {
+        if (this.bannerLocation < this.banners.length - 1) {
+          this.bannerLocation++
+        }
+        elem = $(`#banner-${this.bannerLocation}`)
+        window.scroll({
+          top: elem.offset().top - 56,
+          behavior: 'smooth'
+        })
+      }
+      // console.log(this.bannerLocation)
+    },
+    test: function (banner) {
+      const message = banner ? 'banner test' : 'splash test'
+      console.log(message)
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.spacer {
-  height: 7vh;
+#banner--1 {
+  height: calc(100vh - 56px);
+  position: relative;
 }
+#splashText {
+  position: absolute;
+  top: 10%;
+  left: 55%;
+  max-width: 100%;
+  height: 100%;
+}
+
+// .card-img {
+//   border-radius: 0%;
+// }
 </style>

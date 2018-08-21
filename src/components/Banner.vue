@@ -16,20 +16,22 @@
         <div class="ml-4">{{message}}</div>
       </div>
     </template>
+    <div v-if="down" @click="$emit('arrow-click')" style="position: absolute; bottom: 1rem; left: 50%"><fa-icon icon="angle-down" size="3x"/></div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['message', 'img', 'reverse']
+  props: ['message', 'img', 'reverse', 'down']
 }
 </script>
 
 <style lang="scss" scoped>
 .banner {
-  height: 30vh;
+  position: relative;
+  height: calc(100vh - 56px);
   background-color: black;
   border-top: 2px solid black;
-  border-bottom: 2px solid black;
+  // border-bottom: 2px solid black;
 }
 </style>
