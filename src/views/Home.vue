@@ -8,7 +8,7 @@
         and the things that come out of that
         </p>
       </div>
-      <div @click="$emit('arrow-click')" style="position: absolute; bottom: 1rem; left: 50%"><fa-icon icon="angle-down" size="3x"/></div>
+      <div v-if="!isMobileDevice()" @click="$emit('arrow-click')" style="position: absolute; bottom: 1rem; left: 50%"><fa-icon icon="angle-down" size="3x"/></div>
     </div>
     <div v-for="banner in banners" :key="banner.id" :id="'banner-' + banner.id">
       <banner @arrow-click="onScroll" :message="banner.message" :img="banner.img" :reverse="banner.reverse" :down="banner.down"></banner>
@@ -29,6 +29,10 @@ export default {
 
     if (!this.isMobileDevice()) {
       $('body').css('overflow', 'hidden')
+    } else {
+      this.banners.forEach(banner => {
+        banner.down = false
+      })
     }
 
     this.$on('arrow-click', this.onScroll)
